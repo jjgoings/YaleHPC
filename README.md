@@ -1,5 +1,5 @@
 # YaleHPC
-Gaussian 16 or Q-Chem  submission scripts for use on HPCs with Yale CRC
+Gaussian 16 or Q-Chem  submission scripts for use on HPCs (primarily Grace) with Yale CRC
 
 **Note: you need to be given access to either G16 or Q-Chem before use**
 
@@ -14,6 +14,10 @@ chmod +x submit
 ```
 
 ## Usage
+The script will automatically detect what type of job you want to run based on the extension. Q-Chem is `.in` or `.inp` and G16 is `.com` or `.gjf`. The script will gently scream at you if the file does not exist or is badly named, and will give you advice on how to fix it.
+
+Anyway.
+
 Say you want to run a G16 job called `gaussian16-job.com`. Just navigate to your job and
 
 ```
@@ -25,6 +29,28 @@ which will generate the submit script `gaussian16-job.sh`, which you can then
 ```
 sbatch gaussian16-job.sh
 ```
+
+### Command-line options
+Aside from the required input file, you can also
+
+#### Set number of CPU threads (defaults to 24)
+
+```
+submit -nt <NUMBER_THREADS>
+```
+
+#### Set time to run (default is 4 hours)
+
+```
+submit -t <TIME_IN_HOURS>
+```
+
+#### Set partition (default is `pi_hammes_schiffer`, so you'll need to change if you aren't in our group! `day` is a good choice on Grace)
+
+```
+submit -p <PARTITION>
+```
+
 
 ## Help
 If you run into issues, just `submit --help` which will give you all the nice command-line options!
