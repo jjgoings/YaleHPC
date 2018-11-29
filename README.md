@@ -5,7 +5,7 @@ Gaussian 16 or Q-Chem  submission scripts for use on HPCs with Yale CRC
 
 ## Installation
 
-To use `submit`, easiest way is to put it into `$HOME/bin` (or otherwise add to path).
+To use `submit`, easiest way is to put it into `$HOME/bin` (or otherwise add to `$PATH`).
 
 To make it executable, just 
 
@@ -23,7 +23,7 @@ submit gaussian16-job.com
 which will generate the submit script `gaussian16-job.sh`, which you can then 
 
 ```
-sbatch gaussian16-job.sh`
+sbatch gaussian16-job.sh
 ```
 
 ## Help
