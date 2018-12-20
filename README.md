@@ -33,24 +33,25 @@ sbatch gaussian16-job.sh
 ### Command-line options
 Aside from the required input file, you can also
 
-#### Set number of CPU threads (defaults to 24)
+#### Set number of CPU threads (defaults to 16)
 
 ```
 submit -nt <NUMBER_THREADS>
 ```
 
-#### Set time to run (default is 4 hours)
+#### Set time to run (default is 24 hours)
 
 ```
 submit -t <TIME_IN_HOURS>
 ```
 
-#### Set partition (default is `pi_hammes_schiffer`, so you'll need to change if you aren't in our group! `day` is a good choice on Grace)
+#### Set partition (defaults to `pi_hammes_schiffer,day,week`, so it *should* give the most available partition) 
 
 ```
 submit -p <PARTITION>
 ```
 
+The script should check if the walltime requested makes sense given the partitions requested, e.g. you cannot run a job for 48 hours on the `day` partition.
 
 ## Help
 If you run into issues, just `submit --help` which will give you all the nice command-line options!
