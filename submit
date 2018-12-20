@@ -35,6 +35,22 @@ class SlurmJob(object):
         self.time      = args.time
         self.script    = self.name+'.sh'
 
+        # Test if the walltime is valid on the requested partitions 
+        partition = self.partition.split(',')
+        if (self.time > 672):
+            sys.exit("Walltime of %s hours too long for Grace! \n Exiting..." % self.time)
+        if (self.time > 168) and ('week' in partition):
+            partition.remove('week')
+        if (self.time > 24) and ('day' in partition):
+            partition.remove('day')
+        too_long = list(set(self.partition.split(',')).difference(partition))
+        if too_long:
+            self.partition = ','.join(partition) 
+            print("Wall time of %s h too long for '%s' partition(s)." % (self.time, ','.join(too_long)))
+            print("Modifying partition to: '%s'" % self.partition)
+        
+
+
     def write_slurm_script(self):
         with open(self.script,'w') as f:
            f.write("#!/bin/bash\n")
@@ -45,6 +61,8 @@ class SlurmJob(object):
            f.write("#SBATCH -t "+str(self.time).zfill(2)+":00:00\n")
            f.write("\n")
            if self.software == 'qchem':
+               f.write("module load qchem/5.1dev\n")
+               f.write("\n")
                f.write(self.software+" -nt ${SLURM_CPUS_ON_NODE} "+self.infile+" "+self.name+".out\n")
                f.write("\n")
                f.write("rm slurm-${SLURM_JOB_ID}.out")
@@ -63,9 +81,9 @@ class SlurmJob(object):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Prepare Gaussian 16 or Q-Chem submit script on Grace.')
     parser.add_argument("infile", help="Gaussian 16 or Q-Chem input file")
-    parser.add_argument("-nt", "--nthreads",metavar='N', help="CPUs-per-node",type=int,default=24)
-    parser.add_argument("-p","--partition",metavar='P',help="partition",default="pi_hammes_schiffer")
-    parser.add_argument("-t","--time",metavar='T',help="time (hours)",type=int,default=4)
+    parser.add_argument("-nt", "--nthreads",metavar='N', help="CPUs-per-node",type=int,default=16)
+    parser.add_argument("-p","--partition",metavar='P',help="partition",default="pi_hammes_schiffer,day,week")
+    parser.add_argument("-t","--time",metavar='T',help="time (hours)",type=int,default=24)
     args = parser.parse_args()
 
     slurmjob = SlurmJob(args)
