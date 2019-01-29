@@ -57,6 +57,8 @@ class SlurmJob(object):
            f.write("#SBATCH --nodes=1\n")
            f.write("#SBATCH --cpus-per-task="+str(self.threads)+"\n")
            f.write("#SBATCH --partition="+self.partition+"\n")
+           if 'hammes_schiffer' in self.partition:
+               f.write("#SBATCH -A hammes_schiffer\n")
            f.write("#SBATCH -t "+str(self.time).zfill(2)+":00:00\n")
            f.write("\n")
            if self.software == 'qchem':
