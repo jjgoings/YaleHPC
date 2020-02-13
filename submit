@@ -64,11 +64,14 @@ class SlurmJob(object):
            if self.software == 'qchem':
                #f.write("module load qchem/5.1dev\n")
                #f.write("\n")
-               f.write(self.software+" -nt ${SLURM_CPUS_ON_NODE} "+self.infile+" "+self.name+".out\n")
+               #f.write(self.software+" -nt "+str(self.threads)+" "+self.infile+" "+self.name+".out\n")
+               f.write(self.software+" -nt ${SLURM_CPUS_ON_NODE} -save "+self.infile+" "+self.name+".out ${SLURM_JOB_NAME}_${SLURM_JOB_ID}\n")
+               f.write("\n")
+               f.write("cp -r ${QCSCRATCH}/${SLURM_JOB_NAME}_${SLURM_JOB_ID}/AIMD ${SLURM_JOB_NAME}_${SLURM_JOB_ID}_AIMD")
                f.write("\n")
                f.write("rm slurm-${SLURM_JOB_ID}.out")
            elif self.software == 'g16':
-               f.write("module load Apps/Gaussian/2016-B01\n")
+               f.write("module load Gaussian/16-C.01_AVX\n")
                f.write("\n")
                f.write(self.software+" < "+self.infile+" > "+self.name+".log\n")
                f.write("\n")
@@ -83,7 +86,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Prepare Gaussian 16 or Q-Chem submit script on Grace.')
     parser.add_argument("infile", help="Gaussian 16 or Q-Chem input file")
     parser.add_argument("-nt", "--nthreads",metavar='N', help="CPUs-per-node",type=int,default=16)
-    parser.add_argument("-p","--partition",metavar='P',help="partition",default="pi_hammes_schiffer,day,week")
+    parser.add_argument("-p","--partition",metavar='P',help="partition",default="pi_hammes_schiffer,day")
     parser.add_argument("-t","--time",metavar='T',help="time (hours)",type=int,default=24)
     args = parser.parse_args()
 
